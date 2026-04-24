@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robison Home Remodel — Status</title>
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --card: #ffffff;
+    --border: #e2ddd8;
+    --accent: #5b7fa6;
+    --accent-light: #dce8f5;
+    --red: #c0392b;
+    --red-light: #fdecea;
+    --green: #27ae60;
+    --green-light: #e9f7ef;
+    --yellow: #e67e22;
+    --yellow-light: #fef9ec;
+    --text: #2c2c2c;
+    --muted: #7a7268;
+    --heading: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+  a { color: var(--accent); }
+
+  /* ── Header ── */
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 20px 28px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  header h1 { font-size: 1.45rem; font-weight: 700; letter-spacing: -.3px; }
+  header .updated { font-size: 0.82rem; opacity: .82; }
+
+  /* ── Layout ── */
+  main { max-width: 960px; margin: 0 auto; padding: 24px 20px 48px; }
+  section { margin-bottom: 32px; }
+  h2 {
+    font-size: 1.05rem; font-weight: 700; color: var(--heading);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 6px; margin-bottom: 16px;
+    text-transform: uppercase; letter-spacing: .6px;
+  }
+
+  /* ── Focus Today ── */
+  .focus-list { display: flex; flex-direction: column; gap: 12px; }
+  .focus-item {
+    background: var(--red-light);
+    border-left: 4px solid var(--red);
+    border-radius: 6px;
+    padding: 12px 16px;
+  }
+  .focus-item .action { font-weight: 700; color: var(--red); margin-bottom: 3px; }
+  .focus-item .why { font-size: 0.9rem; color: var(--text); }
+  .focus-item .source { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── Action Items ── */
+  .action-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .action-items li {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .action-items li.urgent { border-left: 4px solid var(--red); }
+  .action-items li.normal { border-left: 4px solid var(--accent); }
+  .action-items input[type=checkbox] { margin-top: 3px; flex-shrink: 0; cursor: pointer; }
+  .action-items .item-text { flex: 1; }
+  .action-items .item-label {
+    display: inline-block;
+    font-size: 0.7rem; font-weight: 700;
+    padding: 1px 6px; border-radius: 3px;
+    margin-right: 6px; vertical-align: middle;
+    text-transform: uppercase; letter-spacing: .4px;
+  }
+  .label-urgent { background: var(--red); color: #fff; }
+  .label-action { background: var(--accent); color: #fff; }
+
+  /* ── Project Status Cards ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .card h3 { font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .card .field { font-size: 0.85rem; margin-bottom: 4px; }
+  .card .field strong { color: var(--muted); font-weight: 600; display: inline-block; min-width: 90px; }
+  .card .blocker {
+    margin-top: 8px;
+    background: var(--red-light);
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 0.82rem;
+    color: var(--red);
+  }
+  .card .blocker strong { color: var(--red); }
+
+  /* ── Key Dates ── */
+  .timeline { display: flex; flex-direction: column; gap: 10px; }
+  .timeline-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+  .timeline-date {
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--accent);
+    min-width: 90px;
+  }
+  .timeline-desc { font-size: 0.9rem; }
+
+  /* ── Email Table ── */
+  .email-table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+    background: var(--card);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th {
+    background: var(--accent);
+    color: #fff;
+    text-align: left;
+    padding: 9px 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  td { padding: 9px 12px; border-top: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: var(--accent-light); }
+  td.action-col { color: var(--red); font-weight: 600; }
+
+  /* ── Recently Resolved ── */
+  .resolved-list { display: flex; flex-direction: column; gap: 8px; }
+  .resolved-item {
+    background: var(--green-light);
+    border-left: 4px solid var(--green);
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+  .resolved-item .title { font-weight: 700; color: var(--green); }
+  .resolved-item .detail { font-size: 0.88rem; color: var(--text); margin-top: 2px; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .card, .action-items li, .timeline-item, .focus-item, .resolved-item { break-inside: avoid; }
+  }
+  @media (max-width: 600px) {
+    header { padding: 14px 16px 12px; }
+    header h1 { font-size: 1.15rem; }
+    main { padding: 16px 12px 40px; }
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🏠 Robison Home Remodel &mdash; Status</h1>
+  </div>
+  <div class="updated">Last updated: Thursday, April 23, 2026 &mdash; Pacific Time</div>
+</header>
+
+<main>
+
+  <!-- SECTION 1: Dave's Focus Today -->
+  <section id="focus">
+    <h2>Dave's Focus Today</h2>
+    <div class="focus-list">
+
+      <div class="focus-item">
+        <div class="action">1 · Sign the Poliform DocuSign document</div>
+        <div class="why">Kymberly Henry (Poliform) sent a reminder today — the contract for your kitchen cabinetry order needs your signature before a deposit payment link can be sent. This is the gate to moving the Poliform order forward.</div>
+        <div class="source">Source: DocuSign email from kymberly.henry@poliformusa.com · Apr 23–24, 2026</div>
+      </div>
+
+      <div class="focus-item">
+        <div class="action">2 · Prepare pantry for Robert's measurement visit (Apr 27, 11am)</div>
+        <div class="why">Robert is scheduled to measure the pantry this Monday. Clear the pantry and ensure access is available so the visit can proceed without delay.</div>
+        <div class="source">Source: Google Calendar event "Robert - Measure Pantry" · Apr 27, 11:00am–12:00pm</div>
+      </div>
+
+      <div class="focus-item">
+        <div class="action">3 · Confirm Poliform deposit amount after signing</div>
+        <div class="why">Kymberly noted she will send the deposit payment link separately once the DocuSign is signed. Watch for that email and confirm the deposit amount matches expectations.</div>
+        <div class="source">Source: Poliform DocuSign email · Apr 23–24, 2026</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 2: Current Action Items -->
+  <section id="actions">
+    <h2>Current Action Items</h2>
+    <ul class="action-items">
+
+      <li class="urgent">
+        <input type="checkbox" id="ai1">
+        <div class="item-text">
+          <label for="ai1">
+            <span class="item-label label-urgent">Urgent</span>
+            Sign Poliform DocuSign document — Kymberly Henry is waiting; deposit payment link will follow.
+          </label>
+        </div>
+      </li>
+
+      <li class="normal">
+        <input type="checkbox" id="ai2">
+        <div class="item-text">
+          <label for="ai2">
+            <span class="item-label label-action">Action</span>
+            Prepare pantry for Robert's measurement on Apr 27 at 11am — clear space, ensure access.
+          </label>
+        </div>
+      </li>
+
+      <li class="normal">
+        <input type="checkbox" id="ai3">
+        <div class="item-text">
+          <label for="ai3">
+            <span class="item-label label-action">Action</span>
+            Watch for Poliform deposit payment link from Kymberly Henry after signing DocuSign; confirm amount.
+          </label>
+        </div>
+      </li>
+
+      <li class="normal">
+        <input type="checkbox" id="ai4">
+        <div class="item-text">
+          <label for="ai4">
+            <span class="item-label label-action">Admin</span>
+            <strong>Remodel Inputs sheet:</strong> Two rows from Apr 22 could not be auto-marked as Processed (no Sheets write tool available). Please manually mark them in the <a href="https://docs.google.com/spreadsheets/d/1qOUj8rHwX_zqvhNZrn2C-DVDuj3AZYLofF1WkPCfF2g/edit" target="_blank">Remodel Inputs Google Sheet</a>.
+          </label>
+        </div>
+      </li>
+
+    </ul>
+  </section>
+
+  <!-- SECTION 3: Project Status Cards -->
+  <section id="status">
+    <h2>Project Status Cards</h2>
+    <div class="cards-grid">
+
+      <div class="card">
+        <h3>Kitchen / Poliform</h3>
+        <div class="field"><strong>Phase:</strong> Contract &amp; Deposit</div>
+        <div class="field"><strong>Next Milestone:</strong> Sign DocuSign → pay deposit → order placed</div>
+        <div class="blocker">⚠ <strong>Blocker:</strong> DocuSign not yet signed. Kymberly sent reminder Apr 23.</div>
+      </div>
+
+      <div class="card">
+        <h3>Pantry / Cabinetry</h3>
+        <div class="field"><strong>Phase:</strong> Measurement</div>
+        <div class="field"><strong>Next Milestone:</strong> Robert measures pantry — Apr 27, 11am</div>
+        <div class="field"><strong>Blocker:</strong> None known</div>
+      </div>
+
+      <div class="card">
+        <h3>Design / Lucile Glessner</h3>
+        <div class="field"><strong>Phase:</strong> Active (no new update)</div>
+        <div class="field"><strong>Next Milestone:</strong> TBD — no calendar event in next 14 days</div>
+        <div class="field"><strong>Blocker:</strong> None known</div>
+      </div>
+
+      <div class="card">
+        <h3>Concrete / Hernandez</h3>
+        <div class="field"><strong>Phase:</strong> Active (no new update)</div>
+        <div class="field"><strong>Next Milestone:</strong> TBD</div>
+        <div class="field"><strong>Blocker:</strong> None known</div>
+      </div>
+
+      <div class="card">
+        <h3>Stone / Marblebee</h3>
+        <div class="field"><strong>Phase:</strong> Active (no new update)</div>
+        <div class="field"><strong>Next Milestone:</strong> TBD</div>
+        <div class="field"><strong>Blocker:</strong> None known</div>
+      </div>
+
+      <div class="card">
+        <h3>Hardware / Argonaut</h3>
+        <div class="field"><strong>Phase:</strong> Active (no new update)</div>
+        <div class="field"><strong>Next Milestone:</strong> TBD</div>
+        <div class="field"><strong>Blocker:</strong> None known</div>
+      </div>
+
+      <div class="card">
+        <h3>Plumbing / Kohler</h3>
+        <div class="field"><strong>Phase:</strong> Active (no new update)</div>
+        <div class="field"><strong>Next Milestone:</strong> TBD</div>
+        <div class="field"><strong>Blocker:</strong> None known</div>
+      </div>
+
+      <div class="card">
+        <h3>General Contracting</h3>
+        <div class="field"><strong>Vendors:</strong> Remy's Quality Construction / Quintal's</div>
+        <div class="field"><strong>Phase:</strong> Active (no new update)</div>
+        <div class="field"><strong>Blocker:</strong> None known</div>
+      </div>
+
+      <div class="card">
+        <h3>Patio Waterproofing</h3>
+        <div class="field"><strong>Phase:</strong> Resolution confirmed</div>
+        <div class="field"><strong>Status:</strong> Gutter installed in crawlspace — working ✓</div>
+        <div class="field"><strong>Blocker:</strong> None — monitoring ongoing</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 4: Key Dates -->
+  <section id="dates">
+    <h2>Key Dates — Next 14 Days</h2>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-date">Apr 23 (Today)</div>
+        <div class="timeline-desc">☑ DocuSign reminder received from Poliform / Kymberly Henry — <strong>sign today</strong>.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-date">Apr 27 (Mon)</div>
+        <div class="timeline-desc">📐 <strong>Robert — Measure Pantry</strong> · 11:00am–12:00pm. Ensure pantry is clear and accessible.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-date">TBD</div>
+        <div class="timeline-desc">💰 Poliform deposit payment link to be sent by Kymberly Henry after DocuSign is signed.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 5: Recent Vendor Emails -->
+  <section id="emails">
+    <h2>Recent Vendor Emails (Last 24 Hours)</h2>
+    <div class="email-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>From</th>
+            <th>Subject</th>
+            <th>Summary</th>
+            <th>Action for Dave</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Apr 23–24, 2026</td>
+            <td>Kymberly Henry<br><small>kymberly.henry@poliformusa.com<br>(via DocuSign)</small></td>
+            <td>Reminder: Keela And Dave Robison — Please review and sign your document</td>
+            <td>Poliform's Kymberly Henry sent a DocuSign reminder for the kitchen cabinetry contract. She will send the deposit payment link in a follow-up email.</td>
+            <td class="action-col">Sign DocuSign document ASAP; watch for deposit payment link email from Kymberly.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 6: Recently Resolved -->
+  <section id="resolved">
+    <h2>Recently Resolved</h2>
+    <div class="resolved-list">
+
+      <div class="resolved-item">
+        <div class="title">✅ Au Pair Room Remodel — COMPLETE</div>
+        <div class="detail">Family confirmed all remaining items on the Au Pair room remodel are done as of Apr 22, 2026. Project removed from active tracker. (Source: Remodel Inputs sheet)</div>
+      </div>
+
+      <div class="resolved-item">
+        <div class="title">✅ Front Patio Waterproofing — Working</div>
+        <div class="detail">A gutter was installed just under the patio in the crawlspace. The small amount of leaking water is now being diverted away from the house and appears to be resolved. Continue monitoring. (Source: Remodel Inputs sheet, Apr 22, 2026)</div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Robison Home Remodel Status &mdash; Auto-generated Apr 23, 2026 (Pacific Time) &mdash; Data from Gmail, Google Calendar &amp; Remodel Inputs Sheet
+</footer>
+
+</body>
+</html>
